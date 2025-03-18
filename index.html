@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencarian Resep Makanan</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    input {
+      padding: 10px;
+      width: 300px;
+      margin: 10px;
+    }
+    button {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .recipe {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 15px;
+      display: inline-block;
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cari Resep Makanan</h1>
+  <p>Masukkan bahan yang kamu punya (pisahkan dengan koma)</p>
+  <input type="text" id="ingredients" placeholder="Contoh: tomato, cheese, bread">
+  <button onclick="searchRecipe()">Cari Resep</button>
+
+  <div id="results"></div>
+
+  <script>
+    async function searchRecipe() {
+      const ingredients = document.getElementById('ingredients').value.trim();
+      if (!ingredients) {
+        alert("Masukkan bahan terlebih dahulu!");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/search-recipe?ingredients=${ingredients}`);
+      const data = await response.json();
+      
+      const resultDiv = document.getElementById('results');
+      resultDiv.innerHTML = "";  // Kosongkan hasil sebelumnya
+
+      if (data.length === 0) {
+        resultDiv.innerHTML = "<p>Resep tidak ditemukan. Coba bahan lain.</p>";
+        return;
+      }
+
+      data.forEach(recipe => {
+        resultDiv.innerHTML += `
+          <div class="recipe">
+            <h3>${recipe.title}</h3>
+            <img src="${recipe.image}" width="200px">
+            <p><b>Bahan yang digunakan:</b> ${recipe.usedIngredientCount}</p>
+            <p><b>Bahan yang tidak tersedia:</b> ${recipe.missedIngredientCount}</p>
+          </div>
+        `;
+      });
+    }
+
+    // Tambahkan event listener untuk menangkap tombol Enter di input
+    document.getElementById('ingredients').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault(); // Hindari reload halaman
+        searchRecipe(); // Panggil fungsi pencarian
+      }
+    });
+  </script>
+</body>
+</html>
