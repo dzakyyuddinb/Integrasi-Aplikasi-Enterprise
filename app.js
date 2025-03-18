@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-const API_KEY = 'da0c249ddc5745d4bf2e6ac225bc1d1f';  // Ganti dengan API Key-mu
+const API_KEY = '';  // Ganti dengan API Key-mu
 
 // Endpoint untuk mencari resep berdasarkan bahan
 app.get('/search-recipe', async (req, res) => {
